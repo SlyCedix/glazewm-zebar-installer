@@ -1,0 +1,18 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+    <Fragment>
+        <Directory 
+            Id="APPLICATIONFOLDER"
+            Name="glzr.io">
+                <Directory 
+                    Id="GLAZEWMINSTALLFOLDER"
+                    Name="GlazeWM"/>
+                <Directory
+                    Id="ZEBARINSTALLFOLDER"
+                    Name="Zebar"/>
+        </Directory>
+        <StandardDirectory Id="ProgramMenuFolder">
+            <Directory Id="GlzrProgramMenuFolder"
+                       Name="glzr.io"/>
+        </StandardDirectory>
+    </Fragment>
+</Wix>

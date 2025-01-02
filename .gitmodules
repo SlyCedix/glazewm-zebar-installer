@@ -1,0 +1,6 @@
+[submodule "zebar"]
+	path = zebar
+	url = https://github.com/glzr-io/zebar.git
+[submodule "glazewm"]
+	path = glazewm
+	url = https://github.com/glzr-io/glazewm.git

@@ -1,0 +1,93 @@
+[env]
+CARGO_TARGET_DIR = "${CARGO_MAKE_WORKING_DIRECTORY}/target"
+
+[tasks.build-glazewm]
+install_crate = false
+command = "cargo"
+args = [
+    "+nightly",
+    "build",
+    "--locked",
+    "--target",
+    "${CARGO_MAKE_RUST_TARGET_TRIPLE}",
+    "--manifest-path",
+    "glazewm/Cargo.toml",
+    "--release",
+    "--features",
+    "${GLAZEWM_FEATURE_SET}",
+]
+
+[tasks.pnpm-install]
+command = "pwsh"
+args = ["--command", "pnpm install -C zebar"]
+
+[tasks.build-zebar-frontend]
+command = "pwsh"
+args = [
+    "--command",
+    "pnpm run -C zebar --filter zebar --filter @zebar/settings-ui build",
+]
+dependencies = ["pnpm-install"]
+
+[tasks.build-zebar]
+install_crate = "tauri-cli"
+command = "cargo"
+args = [
+    "+nightly",
+    "tauri",
+    "build",
+    "--target",
+    "${CARGO_MAKE_RUST_TARGET_TRIPLE}",
+    "-c",
+    "zebar/packages/desktop/tauri.conf.json",
+    "--ci",
+    "--no-bundle",
+]
+dependencies = ["build-zebar-frontend"]
+
+[tasks.build]
+clear = true
+script_runner = "@duckscript"
+script = '''
+targets = array x86_64-pc-windows-msvc aarch64-pc-windows-msvc
+glazewm_feature_sets = array ui_access,no_console ui_access no_console
+for target in %{targets}
+    set_env CARGO_MAKE_RUST_TARGET_TRIPLE %{target}
+    out_dir = set target/%{CARGO_MAKE_RUST_TARGET_TRIPLE}/release
+    for feature_set in %{glazewm_feature_sets}
+        set_env GLAZEWM_FEATURE_SET %{feature_set}
+        cm_run_task build-glazewm
+        mv "%{out_dir}/glazewm-watcher.exe" "%{out_dir}/glazewm-watcher+%{feature_set}.exe"
+        mv "%{out_dir}/glazewm.exe" "%{out_dir}/glazewm+%{feature_set}.exe"
+    end
+    set_env GLAZEWM_FEATURE_SET ""
+    cm_run_task build-glazewm
+    cm_run_task build-zebar
+end
+'''
+
+[tasks.arch-installer]
+command = "wix"
+args = [
+    "build",
+    "./*.wxs",
+    "-arch",
+    "${WIX_ARCH}",
+    "-ext",
+    "WixToolset.UI.wixext",
+    "-out",
+    "./out/installer-${WIX_ARCH}.msi",
+]
+
+[tasks.installer]
+clear = true
+script_runner = "@duckscript"
+script = '''
+archs = array x64 arm64
+
+for arch in %{archs}
+    set_env WIX_ARCH %{arch}
+    cm_run_task arch-installer
+end
+'''
+# dependencies = ["build"]

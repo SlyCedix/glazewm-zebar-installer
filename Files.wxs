@@ -1,0 +1,142 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+<?if $(sys.BUILDARCH) = "x64"?>
+  <?define ArchDir = "target/x86_64-pc-windows-msvc/release"?> 
+<?elseif $(sys.BUILDARCH) = "arm64"?>
+  <?define ArchDir = "target/aarch64-pc-windows-msvc/release"?> 
+<?endif?>
+    <Fragment>
+      <DirectoryRef Id="GLAZEWMINSTALLFOLDER">
+        <Component 
+          Id="Machine_GlazeWMInstallRootFiles" 
+          Guid="ee528d7e-9232-4521-8b95-af8eda0ed00f"
+          Condition="NOT (MSIINSTALLPERUSER = 1)">
+            <File 
+                Id="Machine_RootExe" 
+                Source="$(ArchDir)/glazewm+ui_access,no_console.exe" 
+                Name="glazewm.exe"
+                KeyPath="yes"
+                ShortName="mng.exe"/>
+            <File 
+              Id="Machine_RootWatcherExe" 
+              Source="$(ArchDir)/glazewm-watcher+ui_access,no_console.exe" 
+              Name="glazewm-watcher.exe"
+              ShortName="mngw.exe"/>
+        </Component>
+        <Component 
+          Id="User_GlazeWMInstallRootFiles" 
+          Guid="6d825e33-3216-46df-9632-c515c67bf0e9"
+          Condition="(MSIINSTALLPERUSER = 1)">
+            <File 
+                Id="User_RootExe" 
+                Source="$(ArchDir)/glazewm+no_console.exe" 
+                Name="glazewm.exe"
+                KeyPath="yes"
+                ShortName="ung.exe"/>
+            <File 
+              Id="User_RootWatcherExe" 
+              Source="$(ArchDir)/glazewm-watcher+no_console.exe" 
+              Name="glazewm-watcher.exe"
+              ShortName="ungw.exe"/>
+        </Component>
+        <Directory Id="GlazeWM_CliDir" Name="cli" >
+            <Component 
+              Id="Machine_GlazeWMInstallCliFiles" 
+              Guid="746bd1c4-8444-4797-9ffb-c6d1eeee5157"
+              Condition="NOT (MSIINSTALLPERUSER = 1)">
+                <File 
+                  Id="Machine_CliExe" 
+                  Source="$(ArchDir)/glazewm+ui_access.exe" 
+                  Name="glazewm.exe"
+                  KeyPath="yes" 
+                  ShortName="mcg.exe"/>
+                <File 
+                  Id="Machine_CliWatcherExe" 
+                  Source="$(ArchDir)/glazewm-watcher+ui_access.exe" 
+                  ShortName="mcgw.exe"/>
+            </Component>
+            <Component 
+              Id="User_GlazeWMInstallCliFiles" 
+              Guid="26d33245-ab6f-4980-b266-85a10567e67e"
+              Condition="(MSIINSTALLPERUSER = 1)">
+                <File 
+                  Id="User_CliExe" 
+                  Source="$(ArchDir)/glazewm.exe" 
+                  KeyPath="yes" 
+                  ShortName="ucg.exe"/>
+                <File 
+                  Id="User_CliWatcherExe" 
+                  Source="$(ArchDir)/glazewm-watcher.exe" 
+                  ShortName="ucgw.exe"/>
+            </Component>
+        </Directory>
+      </DirectoryRef>
+      <ComponentGroup 
+        Directory="ZEBARINSTALLFOLDER" 
+        Id="Zebar_InstallFiles">
+        <Files Include="$(ArchDir)/_up_/_up_/**/*"/>
+        <File Id="ZebarExe" Source = "$(ArchDir)/zebar.exe"/>
+      </ComponentGroup>
+
+      <StandardDirectory Id="DesktopFolder">
+        <Component Id="User_GlazeWMInstallDesktopShortcut"
+                   Condition="(MSIINSTALLPERUSER = 1)"
+                   Guid="64480702-0010-4fb2-acf9-758882c68a7e">
+          <Shortcut Id="User_GlazeWMDesktopShortcut"
+                    Name="GlazeWM"
+                    Description="Tiling Window Manager"
+                    Target="[#User_RootExe]"
+                    WorkingDirectory="GLAZEWMINSTALLFOLDER"/>
+        </Component>
+
+        <Component Id="Machine_GlazeWMInstallDesktopShortcut"
+                   Condition="(MSIINSTALLPERUSER = 1)"
+                   Guid="6298f11e-7494-408b-972e-a7cb66226d6d">
+          <Shortcut Id="Machine_GlazeWMDesktopShortcut"
+                    Name="GlazeWM"
+                    Description="Tiling Window Manager"
+                    Target="[#Machine_RootExe]"
+                    WorkingDirectory="GLAZEWMINSTALLFOLDER"/>
+        </Component>
+
+        <Component Id="ZebarInstallDesktopShortcut"
+                   Condition="(MSIINSTALLPERUSER = 1)"
+                   Guid="eaa36bff-1d44-4eb1-99a6-92bdf945b578">
+          <Shortcut Id="ZebarDesktopShortcut"
+                    Name="Zebar"
+                    Target="[#ZebarExe]"
+                    WorkingDirectory="ZEBARINSTALLFOLDER"/>
+        </Component>
+      </StandardDirectory>
+
+      <DirectoryRef Id="GlzrProgramMenuFolder">
+        <Component Id="User_GlazeWMInstallMenuShortcut"
+                   Condition="(MSIINSTALLPERUSER = 1)"
+                   Guid="b28887b4-b7ac-4809-b9df-25f14461addf">
+          <Shortcut Id="User_GlazeWMMenuShortcut"
+                    Name="GlazeWM"
+                    Description="Tiling Window Manager"
+                    Target="[#User_RootExe]"
+                    WorkingDirectory="GLAZEWMINSTALLFOLDER"/>
+        </Component>
+
+        <Component Id="Machine_GlazeWMInstallMenuShortcut"
+                   Condition="(MSIINSTALLPERUSER = 1)"
+                   Guid="325d2cc2-5e4b-4576-b5e7-af0c97082da9">
+          <Shortcut Id="Machine_GlazeWMMenuShortcut"
+                    Name="GlazeWM"
+                    Description="Tiling Window Manager"
+                    Target="[#Machine_RootExe]"
+                    WorkingDirectory="GLAZEWMINSTALLFOLDER"/>
+        </Component>
+
+        <Component Id="ZebarInstallMenuShortcut"
+                   Condition="(MSIINSTALLPERUSER = 1)"
+                   Guid="64c70e1d-ac4f-487a-acc3-c1f87d8e2c52">
+          <Shortcut Id="ZebarMenuShortcut"
+                    Name="Zebar"
+                    Target="[#ZebarExe]"
+                    WorkingDirectory="ZEBARINSTALLFOLDER"/>
+        </Component>
+      </DirectoryRef>
+    </Fragment>
+</Wix>

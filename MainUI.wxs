@@ -1,0 +1,57 @@
+<Wix xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui"
+     xmlns="http://wixtoolset.org/schemas/v4/wxs">
+    <Fragment>
+        <WixVariable
+            Id="WixUILicenseRtf"
+            Value="EULA.rtf"/>
+
+        <Property Id="ApplicationFolderName" Value="glzr.io"/>
+        <Property Id="WixAppFolder" Value="WixPerMachineFolder"/>
+        <Property Id="ALLUSERS" Value="2"/>
+        <Property Id="Privileged" Value="0"/>
+        <Property Id="MSIINSTALLPERUSER" Value="{}"/>    
+    
+        <UI Id="MainUI">
+            <ui:WixUI Id="WixUI_Advanced"/>
+            <UIRef Id="WixUI_ErrorProgressText"/>
+
+            <Publish
+              Dialog="InstallScopeDlg"
+              Control="Next"
+              Event="NewDialog"
+              Value="InstallDirDlg"
+              Order="8"/>
+
+            <Publish Dialog="InstallScopeDlg"
+                     Control="Next"
+                     Property="MSIINSTALLPERUSER"
+                     Value="1"
+                     Order="3"
+                     Condition='WixAppFolder = "WixPerUserFolder"'/>
+            <Publish Dialog="InstallScopeDlg"
+                     Control="Next"
+                     Property="MSIINSTALLPERUSER"
+                     Value='{}'
+                     Order="2"
+                     Condition='WixAppFolder = "WixPerMachineFolder"'/>
+            <Publish Dialog="InstallScopeDlg"
+                     Control="Next"
+                     Event="DoAction"
+                     Value="WixSetDefaultPerMachineFolder"
+                     Order="3"
+                     Condition='WixAppFolder = "WixPerMachineFolder"'/>
+            <Publish Dialog="InstallScopeDlg"
+                     Control="Next"
+                     Event="DoAction"
+                     Value="WixSetDefaultPerUserFolder"
+                     Order="3"
+                     Condition='WixAppFolder = "WixPerUserFolder"'/>
+
+            <Publish Dialog="InstallScopeDlg"
+                     Control="Next"
+                     Property="INSTALLFOLDER" 
+                     Value="[APPLICATIONFOLDER]"
+                     Order="8"/>
+        </UI>
+    </Fragment>
+</Wix>

@@ -1,0 +1,18 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+    <Package Name="GlazeWM"
+             Manufacturer="Glzr Software Pte. Ltd."
+             Version="1.0.0"
+             UpgradeCode="ef0f849b-d90d-4647-bb26-730c6fce5f9e"
+             Scope="perUser">
+        <Property Id="REINSTALLMODE" Value="amus" />
+        <MajorUpgrade Schedule="afterInstallInitialize" AllowDowngrades="yes" />
+        <MediaTemplate EmbedCab="yes"/>
+
+        <Icon Id="Custom_Ico" SourceFile="glazewm/resources/assets/icon.ico" />
+        <Property Id="ARPPRODUCTICON" Value="Custom_Ico" />
+
+        <FeatureGroupRef Id="AllFeatures"/>
+       
+        <UIRef Id="MainUI"/>
+  </Package>
+</Wix>

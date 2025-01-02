@@ -1,0 +1,107 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+    <Fragment>
+        <FeatureGroup Id="AllFeatures"> 
+            <Feature 
+                Id="GlazeWMFeature" 
+                Title="!(bind.Property.ProductName)"
+                AllowAbsent="no"
+                ConfigurableDirectory="GLAZEWMINSTALLFOLDER">
+                
+                <ComponentRef Id="Machine_GlazeWMInstallRootFiles"/>
+                <ComponentRef Id="User_GlazeWMInstallRootFiles"/>
+                <ComponentRef Id="Machine_GlazeWMInstallMenuShortcut"/>
+                <ComponentRef Id="User_GlazeWMInstallMenuShortcut"/>
+
+                <Feature Id="GlazeWM_MainCliFeature" Title="Command-line Interface"> 
+                    <ComponentRef Id="Machine_GlazeWMInstallCliFiles"/>
+                    <ComponentRef Id="Machine_AddGlazeWMPathEnv"/>
+
+                    <ComponentRef Id="User_GlazeWMInstallCliFiles"/>
+                    <ComponentRef Id="User_AddGlazeWMPathEnv"/>
+                </Feature>
+
+                <Feature 
+                  Id="GlazeWM_CreateDesktopShortcut"
+                  Title="Create Desktop Shortcut">
+                    <ComponentRef Id="Machine_GlazeWMInstallDesktopShortcut"/>
+                    <ComponentRef Id="User_GlazeWMInstallDesktopShortcut"/>
+                </Feature>
+            </Feature>
+
+            <Feature 
+              ConfigurableDirectory="ZEBARINSTALLFOLDER"
+              Id="ZebarFeature" 
+              Title="Zebar">
+              <ComponentGroupRef Id="Zebar_InstallFiles"/>
+              <ComponentRef Id="Machine_AddZebarPathEnv"/>
+              <ComponentRef Id="User_AddZebarPathEnv"/>
+              <ComponentRef Id="ZebarInstallMenuShortcut"/>
+              <Feature 
+                Id="Zebar_DesktopShortcutFeature"
+                Title="Create Desktop Shortcut">
+                <ComponentRef Id="ZebarInstallDesktopShortcut"/>
+              </Feature>
+            </Feature>
+        </FeatureGroup>
+
+         <Component 
+           Id="Machine_AddGlazeWMPathEnv" 
+           KeyPath="yes" 
+           Guid="44b8bbbc-8896-4b60-a800-8b0ac06ea893"
+           Condition="NOT (MSIINSTALLPERUSER = 1)">
+            <Environment
+                Id="Machine_GlazeWMPathEnv"
+                Value="[GLAZEWMINSTALLFOLDER]\cli"
+                Name="PATH"
+                Permanent="no"
+                Part="first"
+                Action="set"
+                System="yes"/>
+        </Component>
+
+        <Component 
+          Id="User_AddGlazeWMPathEnv" 
+          KeyPath="yes" 
+          Guid="34505b9a-2a21-4b3f-bcc6-f2441b61ec74"
+          Condition="(MSIINSTALLPERUSER = 1)">
+            <Environment
+                Id="User_GlazeWMPathEnv"
+                Value="[GLAZEWMINSTALLFOLDER]\cli"
+                Name="PATH"
+                Permanent="no"
+                Part="first"
+                Action="set"
+                System="no"/>
+        </Component>
+
+        <Component 
+           Id="Machine_AddZebarPathEnv" 
+           KeyPath="yes" 
+           Guid="e095da95-73fc-4451-b873-1d60e717bf69"
+           Condition="NOT (MSIINSTALLPERUSER = 1)">
+            <Environment
+                Id="Machine_ZebarPathEnv"
+                Value="[ZEBARINSTALLFOLDER]"
+                Name="PATH"
+                Permanent="no"
+                Part="first"
+                Action="set"
+                System="yes"/>
+        </Component>
+
+        <Component 
+          Id="User_AddZebarPathEnv" 
+          KeyPath="yes" 
+          Guid="4c5014d6-c7f3-420f-ae30-4f63641a2365"
+          Condition="(MSIINSTALLPERUSER = 1)">
+            <Environment
+                Id="User_ZebarPathEnv"
+                Value="[ZEBARINSTALLFOLDER]"
+                Name="PATH"
+                Permanent="no"
+                Part="first"
+                Action="set"
+                System="no"/>
+        </Component>
+    </Fragment>
+</Wix>
