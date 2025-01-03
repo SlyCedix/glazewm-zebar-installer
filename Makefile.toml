@@ -45,7 +45,6 @@ args = [
     "--ci",
     "--no-bundle",
 ]
-dependencies = ["build-zebar-frontend"]
 
 [tasks.build]
 clear = true
@@ -53,6 +52,9 @@ script_runner = "@duckscript"
 script = '''
 targets = array x86_64-pc-windows-msvc aarch64-pc-windows-msvc
 glazewm_feature_sets = array ui_access,no_console ui_access no_console
+
+cm_run_task build-zebar-frontend
+
 for target in %{targets}
     set_env CARGO_MAKE_RUST_TARGET_TRIPLE %{target}
     out_dir = set target/%{target}/release
@@ -68,6 +70,12 @@ for target in %{targets}
 end
 '''
 
+[tasks.wix-deps]
+command = "wix"
+args = [
+    wix extension add" "-g" "WixToolset.Util.wixext"
+]
+
 [tasks.arch-installer]
 command = "wix"
 args = [
@@ -80,6 +88,7 @@ args = [
     "-out",
     "./out/installer-${WIX_ARCH}.msi",
 ]
+dependencies = ["wix-deps"]
 
 [tasks.installer]
 clear = true
