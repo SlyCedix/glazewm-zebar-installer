@@ -1,6 +1,8 @@
 FROM rust:bullseye
 WORKDIR /root
 
+ADD docker/* /
+
 RUN apt-get update -y -qq && apt-get upgrade -y -qq
 RUN apt-get install build-essential -y -qq
 RUN apt-get install lsb-release wget software-properties-common gnupg -y -qq
@@ -25,8 +27,6 @@ RUN rustup target add x86_64-pc-windows-msvc --toolchain nightly
 RUN rustup target add aarch64-pc-windows-msvc --toolchain nightly
 RUN cargo install xwin
 RUN xwin --accept-license --arch x86_64,aarch64 splat --output /.xwin || true
-RUN mkdir /.cargo
-ADD docker/Cargo.toml /.cargo/Cargo.toml
 
 # Install Make tool
 RUN cargo install cargo-make
