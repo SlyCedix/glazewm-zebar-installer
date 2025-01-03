@@ -3,9 +3,9 @@ name: Publish Docker
 on: 
   push:
     paths:
-      - Dockerfile
-      - docker/**
-      - .github/workflows/publish-docker.yml
+      - 'Dockerfile'
+      - 'docker/**'
+      - '.github/workflows/publish-docker.yml'
     tags-ignore:
       - '*'
     branches:
