@@ -1,7 +1,7 @@
 FROM rust:bullseye
 WORKDIR /root
 
-ADD docker/* /
+ADD docker /
 
 RUN apt-get update -y -qq && apt-get upgrade -y -qq
 RUN apt-get install build-essential -y -qq
