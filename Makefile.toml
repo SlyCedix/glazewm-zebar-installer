@@ -73,7 +73,7 @@ end
 [tasks.wix-deps]
 command = "wix"
 args = [
-    wix extension add" "-g" "WixToolset.Util.wixext"
+    "extension", "add", "-g", "WixToolset.Util.wixext"
 ]
 
 [tasks.arch-installer]
