@@ -11,17 +11,14 @@ RUN chmod +x llvm.sh
 RUN ./llvm.sh 18
 
 # Install Node
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-RUN nvm install node
-RUN nvm use node
-RUN npm install pnpm
+RUN apt-get install nodejs npm -y -qq
+RUN npm install pnpm -g
 
 # Setup rust cross-compilation
-RUN rustup component add rust-src --toolchain nightly-x86_64-unknown-linux-gnu
 RUN rustup target add x86_64-pc-windows-msvc
 RUN rustup target add aarch64-pc-windows-msvc
 RUN cargo install xwin
-RUN xwin --accept-license --arch x86_64,aarch64 splat --out /xwin
+RUN xwin --accept-license --arch x86_64,aarch64 splat --output /.xwin || true
 RUN mkdir /.cargo
 
 ADD docker/Cargo.toml /.cargo/Cargo.toml
