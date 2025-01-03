@@ -40,3 +40,6 @@ RUN apt-get install -y dotnet-sdk-9.0
 RUN dotnet tool install --global wix
 
 ENV PATH="${PATH}:/root/.dotnet/tools"
+
+# Install Tauri
+RUN cargo install tauri-cli
