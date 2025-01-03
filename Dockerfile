@@ -11,7 +11,10 @@ RUN chmod +x llvm.sh
 RUN ./llvm.sh 18
 
 # Install Node
-RUN apt-get install nodejs npm -y -qq
+RUN apt-get install -y -qq npm
+RUN npm install n -g
+RUN n lts
+RUN npm install npm@latest -g
 RUN npm install pnpm -g
 
 # Setup rust cross-compilation
@@ -20,5 +23,3 @@ RUN rustup target add aarch64-pc-windows-msvc
 RUN cargo install xwin
 RUN xwin --accept-license --arch x86_64,aarch64 splat --output /.xwin || true
 RUN mkdir /.cargo
-
-ADD docker/Cargo.toml /.cargo/Cargo.toml
