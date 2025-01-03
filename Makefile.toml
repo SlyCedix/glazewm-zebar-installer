@@ -1,5 +1,6 @@
 [env]
 CARGO_TARGET_DIR = "${CARGO_MAKE_WORKING_DIRECTORY}/target"
+VERSION_NUMBER = "3.7.0"
 
 [tasks.build-glazewm]
 install_crate = false
@@ -7,6 +8,7 @@ command = "cargo"
 args = [
     "+nightly",
     "build",
+    "-Zbuild-std",
     "--locked",
     "--target",
     "${CARGO_MAKE_RUST_TARGET_TRIPLE}",
@@ -18,14 +20,13 @@ args = [
 ]
 
 [tasks.pnpm-install]
-command = "pwsh"
-args = ["--command", "pnpm install -C zebar"]
+command = "pnpm"
+args = ["install" ,"-C", "zebar"]
 
 [tasks.build-zebar-frontend]
-command = "pwsh"
+command = "pnpm"
 args = [
-    "--command",
-    "pnpm run -C zebar --filter zebar --filter @zebar/settings-ui build",
+    "run", "-C", "zebar", "--filter", "zebar", "--filter", "@zebar/settings-ui", "build",
 ]
 dependencies = ["pnpm-install"]
 
@@ -36,6 +37,7 @@ args = [
     "+nightly",
     "tauri",
     "build",
+    "-Zbuild-std",
     "--target",
     "${CARGO_MAKE_RUST_TARGET_TRIPLE}",
     "-c",
@@ -53,7 +55,7 @@ targets = array x86_64-pc-windows-msvc aarch64-pc-windows-msvc
 glazewm_feature_sets = array ui_access,no_console ui_access no_console
 for target in %{targets}
     set_env CARGO_MAKE_RUST_TARGET_TRIPLE %{target}
-    out_dir = set target/%{CARGO_MAKE_RUST_TARGET_TRIPLE}/release
+    out_dir = set target/%{target}/release
     for feature_set in %{glazewm_feature_sets}
         set_env GLAZEWM_FEATURE_SET %{feature_set}
         cm_run_task build-glazewm
