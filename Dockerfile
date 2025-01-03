@@ -20,6 +20,7 @@ RUN npm install pnpm -g
 # Setup rust cross-compilation
 RUN rustup update
 RUN rustup update nightly
+RUN rustup component add rust-src --toolchain nightly
 RUN rustup target add x86_64-pc-windows-msvc --toolchain nightly
 RUN rustup target add aarch64-pc-windows-msvc --toolchain nightly
 RUN cargo install xwin
