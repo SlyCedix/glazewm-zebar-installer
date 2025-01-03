@@ -18,8 +18,10 @@ RUN npm install npm@latest -g
 RUN npm install pnpm -g
 
 # Setup rust cross-compilation
-RUN rustup target add x86_64-pc-windows-msvc
-RUN rustup target add aarch64-pc-windows-msvc
+RUN rustup update
+RUN rustup update nightly
+RUN rustup target add x86_64-pc-windows-msvc --toolchain nightly
+RUN rustup target add aarch64-pc-windows-msvc --toolchain nightly
 RUN cargo install xwin
 RUN xwin --accept-license --arch x86_64,aarch64 splat --output /.xwin || true
 RUN mkdir /.cargo
