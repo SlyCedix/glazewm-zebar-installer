@@ -21,7 +21,13 @@ jobs:
         with:
           submodules: 'recursive'
       
-      - name: Bundle installer
+      - name: Install wix extension
+        run: wix extension add -g WixToolset.Util.wixext
+
+      - name: Build Executables
+        run: cargo make build
+
+      - name: Create installers
         run: cargo make installer
 
       - name: Upload Installers
