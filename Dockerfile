@@ -23,3 +23,15 @@ RUN rustup target add aarch64-pc-windows-msvc
 RUN cargo install xwin
 RUN xwin --accept-license --arch x86_64,aarch64 splat --output /.xwin || true
 RUN mkdir /.cargo
+ADD docker/Cargo.toml /.cargo/Cargo.toml
+
+# Install Make tool
+RUN cargo install cargo-make
+
+# Install dotnet and wix
+RUN wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+RUN dpkg -i packages-microsoft-prod.deb
+RUN rm packages-microsoft-prod.deb
+RUN apt-get update
+RUN apt-get install -y dotnet-sdk-9.0
+RUN dotnet tool install --global wix
